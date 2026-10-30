@@ -1,0 +1,82 @@
+# Local test stack only. What the plugin itself needs (auth hook, OAuth server, JWKS, the `cms` service, gateway routes)
+# lives in the package deploy/selfhosted/ and is layered in by scripts/lib.sh → compose(), the same files a customer
+# adds with COMPOSE_FILE. This file holds the rest: things that only make sense on this machine.
+# Upstream: supabase/supabase docker/ at the tag in stack/SUPABASE_VERSION, copied to stack/upstream/ untouched.
+# Project directory = stack/upstream, so relative paths below resolve from there.
+
+name: supabase-cms
+
+services:
+
+  # ── Gateway: localhost-only port (routes and the open OAuth route come from the package) ──
+  api-gw:
+    ports: !override
+      - 127.0.0.1:${API_GW_HTTP_PORT}:8000/tcp
+
+  # ── Auth: mail goes to Mailpit, redirect targets include local dev servers ─────────────────
+  auth:
+    environment:
+      # Mail (magic link, invitation, password recovery) goes to Mailpit, a catcher: nothing leaves the machine.
+      # Browse the mails at http://localhost:${CMS_MAILPIT_WEB_PORT:-55326}. Upstream's SMTP_HOST=supabase-mail does not exist here.
+      # Production: set real SMTP_* in .env (docs/install-selfhosted.md) and leave these four lines out.
+      GOTRUE_SMTP_HOST: mailpit
+      GOTRUE_SMTP_PORT: "1025"
+      GOTRUE_SMTP_USER: ""
+      GOTRUE_SMTP_PASS: ""
+      # Mail links may return to the CMS UI (/cms/) on SITE_URL and on any local port, for the Vite dev server and the
+      # Playwright server. A deployment lists its exact UI URL instead (CMS_REDIRECT_URLS).
+      # local: tokens live an hour like before (the package default is 15 minutes)
+      GOTRUE_JWT_EXP: ${JWT_EXPIRY}
+      GOTRUE_URI_ALLOW_LIST: "${SITE_URL}/cms/**,${SUPABASE_PUBLIC_URL}/cms/**,http://localhost:*/cms/**,http://127.0.0.1:*/cms/**"
+
+  # ── Mailpit: own service on its own ports (1025/8025 are often taken on a developer machine) ──
+  mailpit:
+    container_name: supabase-cms-mailpit
+    # the image that is already on this machine; pin a tag when this leaves the local stack
+    image: axllent/mailpit@sha256:ed9b00c609e77e99c79b93f1178255ebc271868920f2c69a8d166bd5634ed10d
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:${CMS_MAILPIT_SMTP_PORT:-55325}:1025
+      - 127.0.0.1:${CMS_MAILPIT_WEB_PORT:-55326}:8025
+    environment:
+      MP_MAX_MESSAGES: "500"
+
+  storage:
+    # Docker Desktop's macOS bind mounts have no extended attributes, which the file backend needs
+    # for object metadata (uploads fail with ENOTSUP) — keep files in a named volume instead.
+    volumes: !override
+      - storage-data:/var/lib/storage
+  imgproxy:
+    volumes: !override
+      - storage-data:/var/lib/storage
+
+  # ── Postgres via Supavisor: localhost-only, ports that do not clash with `supabase start` ──
+  supavisor:
+    ports: !override
+      - 127.0.0.1:${POOLER_HOST_PORT_SESSION}:5432
+      - 127.0.0.1:${POOLER_HOST_PORT_TRANSACTION}:6543
+
+  # ── Plugin container (service defined in deploy/selfhosted/docker-compose.cms.yml): built from this checkout instead
+  #    of pulled, published on localhost for the Vite/E2E setups, invite link instead of mail (the stack's SMTP is Mailpit) ──
+  cms:
+    container_name: supabase-cms
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      args:
+        VERSION: ${CMS_VERSION:-dev}
+    ports:
+      - 127.0.0.1:${CMS_MCP_PORT}:8080
+
+  # admin API container: the same image, built once by `cms` above (two builds of one tag collide); invite link instead of mail
+  cms-admin:
+    container_name: supabase-cms-admin
+    pull_policy: never
+    depends_on:
+      cms:
+        condition: service_started
+    environment:
+      CMS_ADMIN_INVITE_DELIVERY: ${CMS_ADMIN_INVITE_DELIVERY:-link}
+
+volumes:
+  storage-data:

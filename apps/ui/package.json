@@ -1,0 +1,41 @@
+{
+  "name": "supapim-ui",
+  "version": "0.1.0",
+  "license": "BUSL-1.1",
+  "private": true,
+  "description": "Schema-first CMS UI: react-admin on Supabase, resources from cms_api.describe(), everything with the signed-in person's token.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "node --test test/",
+    "e2e": "vite build && playwright test"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@fontsource/geist": "5.3.0",
+    "@fontsource/geist-mono": "5.3.0",
+    "@mui/icons-material": "7.3.11",
+    "@mui/material": "7.3.11",
+    "@raphiniert/ra-data-postgrest": "2.6.0",
+    "@supabase/supabase-js": "2.118.0",
+    "lucide-react": "1.56.0",
+    "ra-i18n-polyglot": "5.15.5",
+    "ra-input-rich-text": "5.15.5",
+    "ra-language-english": "5.15.5",
+    "ra-supabase-core": "3.5.2",
+    "react": "19.2.9",
+    "react-admin": "5.15.5",
+    "react-dom": "19.2.9",
+    "react-hook-form": "7.91.0",
+    "react-router": "7.18.5",
+    "react-router-dom": "7.18.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@vitejs/plugin-react": "6.1.2",
+    "vite": "8.3.4"
+  }
+}

@@ -1,0 +1,112 @@
+# SupaPIM for the upstream self-hosted Supabase stack (supabase/supabase docker/, self-hosted/v0.8.x).
+# Layered on top of upstream's docker-compose.yml with COMPOSE_FILE (see docs/install-selfhosted.md); no upstream
+# file is edited. Pick the file for your gateway as well: docker-compose.envoy.yml (default) or docker-compose.kong.yml.
+#
+#   COMPOSE_FILE=docker-compose.yml:cms/docker-compose.cms.yml:cms/docker-compose.envoy.yml
+#
+# Relative paths in these files resolve from the directory of upstream's docker-compose.yml. The package folder is
+# expected at ./cms there; CMS_PKG_DIR in .env says otherwise.
+#
+# Needs these values in the same .env as the rest of the stack (cms/env.example, scripts/install.sh env adds them):
+#   JWT_KEYS, JWT_JWKS, SUPABASE_SECRET_KEY   from  sh utils/add-new-auth-keys.sh  (upstream ships them empty)
+#   CMS_IMAGE                                  the plugin image, e.g. the one shipped with this package
+#   SITE_URL, SUPABASE_PUBLIC_URL, API_EXTERNAL_URL   the public address of the gateway (one host)
+#   PGRST_DB_SCHEMAS                           must contain cms_api
+# Production mail: set real SMTP_* — invitations and password resets go through them.
+
+services:
+
+  # ── Auth: signing keys, access token hook, OAuth 2.1 server, TOTP ───────────────────────────
+  auth:
+    environment:
+      # Asymmetric (ES256) signing like Supabase Cloud: the MCP server and the OAuth server's ID tokens need a JWKS
+      GOTRUE_JWT_KEYS: "${JWT_KEYS:?JWT_KEYS is empty - run  sh utils/add-new-auth-keys.sh --update-env  in the Supabase docker directory}"
+      # Supabase Auth user → Postgres group role in the "role" claim (function from sql/install.sql)
+      GOTRUE_HOOK_CUSTOM_ACCESS_TOKEN_ENABLED: "true"
+      GOTRUE_HOOK_CUSTOM_ACCESS_TOKEN_URI: pg-functions://postgres/cms/custom_access_token_hook
+      # Supabase Auth as OAuth 2.1 authorization server for remote MCP clients (Claude, ChatGPT, Cursor, …).
+      # The consent page is SITE_URL + AUTHORIZATION_PATH; the gateway forwards /oauth/consent to this package.
+      GOTRUE_OAUTH_SERVER_ENABLED: "true"
+      GOTRUE_OAUTH_SERVER_ALLOW_DYNAMIC_REGISTRATION: "true"
+      GOTRUE_OAUTH_SERVER_AUTHORIZATION_PATH: /oauth/consent
+      # TOTP-MFA (authenticator app); the UI asks for the code at every sign-in of a person who enrolled one
+      GOTRUE_MFA_TOTP_ENROLL_ENABLED: "true"
+      GOTRUE_MFA_TOTP_VERIFY_ENABLED: "true"
+      # Hardening (Task 7 findings): a token of an MCP client may not change the password without re-authentication (F-03);
+      # access tokens live 15 minutes, so removing a role takes effect quickly (F-05, CMS_JWT_EXPIRY in .env to change);
+      # sessions, and with them the refresh tokens of MCP clients, end after 30 days or 7 days of inactivity (F-06).
+      GOTRUE_SECURITY_UPDATE_PASSWORD_REQUIRE_REAUTHENTICATION: "true"
+      GOTRUE_JWT_EXP: ${CMS_JWT_EXPIRY:-900}
+      GOTRUE_SESSIONS_TIMEBOX: ${CMS_SESSION_TIMEBOX:-720h}
+      GOTRUE_SESSIONS_INACTIVITY_TIMEOUT: ${CMS_SESSION_INACTIVITY:-168h}
+      # Where mail links (invitation, magic link, password reset) may send the browser back to: the CMS UI.
+      # SITE_URL itself is always allowed. Several URLs: comma separated; set CMS_REDIRECT_URLS in .env.
+      GOTRUE_URI_ALLOW_LIST: ${CMS_REDIRECT_URLS:-${SUPABASE_PUBLIC_URL}/cms/**}
+
+  # Verify ES256 tokens everywhere (upstream ships these commented out; rest already prefers JWT_JWKS)
+  realtime:
+    environment:
+      API_JWT_JWKS: "${JWT_JWKS:?JWT_JWKS is empty - run  sh utils/add-new-auth-keys.sh --update-env}"
+  storage:
+    environment:
+      JWT_JWKS: ${JWT_JWKS}
+  functions:
+    environment:
+      SUPABASE_JWKS: ${JWT_JWKS}
+
+  # ── Plugin container: one image, two services. `cms` = CMS UI (/cms), remote MCP server (/cms/mcp), consent page;
+  #    `cms-admin` = the admin API (/cms/api/admin/*, `node admin.mjs`). The gateway routes to them (docker-compose.envoy.yml /
+  #    docker-compose.kong.yml). `cms` and the UI talk to Supabase like any client: through the gateway, with the public anon
+  #    key and the signed-in person's own token. Only `cms-admin` holds the secret key, to invite and block people, and it uses
+  #    it after a valid token AND a database check that the person is an admin. An MCP request can never reach that process. ──
+  cms:
+    image: "${CMS_IMAGE:?CMS_IMAGE is empty - set it in .env to the plugin image (docs/install-selfhosted.md, step 2)}"
+    restart: unless-stopped
+    depends_on:
+      api-gw:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+    environment:
+      PORT: 8080
+      # Public URLs (what browsers and MCP clients see): one host for the issuer, /cms, /cms/mcp and the metadata
+      PUBLIC_BASE_URL: ${SUPABASE_PUBLIC_URL}
+      SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL}
+      AUTH_ISSUER: ${API_EXTERNAL_URL}
+      # The anon key is public (it is in every web page of a Supabase app); it only opens the gateway.
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      # Where this container reaches Supabase: the gateway, as a client would (Cloud: https://<ref>.supabase.co)
+      SUPABASE_URL: http://api-gw:8000
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  cms-admin:
+    image: "${CMS_IMAGE:?CMS_IMAGE is empty - set it in .env to the plugin image (docs/install-selfhosted.md, step 2)}"
+    command: ["node", "admin.mjs"]
+    restart: unless-stopped
+    depends_on:
+      api-gw:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+    environment:
+      PORT: 8081
+      PUBLIC_BASE_URL: ${SUPABASE_PUBLIC_URL}
+      SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL}
+      AUTH_ISSUER: ${API_EXTERNAL_URL}
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_URL: http://api-gw:8000
+      # The ONE place with the secret key; scripts/check-no-service-key.sh checks it
+      SUPABASE_SECRET_KEY: "${SUPABASE_SECRET_KEY:?SUPABASE_SECRET_KEY is empty - run  sh utils/add-new-auth-keys.sh --update-env}"
+      # mail = GoTrue sends the invitation (needs working SMTP_* in .env); link = nothing is sent, the admin gets the link
+      CMS_ADMIN_INVITE_DELIVERY: ${CMS_ADMIN_INVITE_DELIVERY:-mail}
+      # Where invitation links land, independent of the caller's Origin header (F-10)
+      CMS_PUBLIC_UI_URL: ${CMS_PUBLIC_UI_URL:-${SUPABASE_PUBLIC_URL}/cms/}
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8081/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10

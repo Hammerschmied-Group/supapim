@@ -1,0 +1,1762 @@
+{
+  "role": "cms_admin",
+  "schemas": [
+    {
+      "name": "nordwind",
+      "tables": [
+        {
+          "rls": {
+            "forced": false,
+            "enabled": true,
+            "policies": [
+              {
+                "name": "rbac: cms_admin all",
+                "check": "true",
+                "using": "true",
+                "command": "all",
+                "permissive": true
+              }
+            ]
+          },
+          "kind": "table",
+          "name": "faq",
+          "unique": [],
+          "columns": [
+            {
+              "udt": "uuid",
+              "enum": null,
+              "name": "id",
+              "type": "uuid",
+              "comment": null,
+              "default": "gen_random_uuid()",
+              "category": "user",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "question",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "answer",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "int4",
+              "enum": null,
+              "name": "position",
+              "type": "integer",
+              "comment": null,
+              "default": "0",
+              "category": "number",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "bool",
+              "enum": null,
+              "name": "published",
+              "type": "boolean",
+              "comment": null,
+              "default": "true",
+              "category": "boolean",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "timestamptz",
+              "enum": null,
+              "name": "updated_at",
+              "type": "timestamp with time zone",
+              "comment": null,
+              "default": "now()",
+              "category": "datetime",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            }
+          ],
+          "comment": null,
+          "privileges": {
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true
+          },
+          "primary_key": [
+            "id"
+          ],
+          "foreign_keys": []
+        },
+        {
+          "rls": {
+            "forced": false,
+            "enabled": true,
+            "policies": [
+              {
+                "name": "rbac: cms_admin all",
+                "check": "true",
+                "using": "true",
+                "command": "all",
+                "permissive": true
+              }
+            ]
+          },
+          "kind": "table",
+          "name": "product_images",
+          "unique": [],
+          "columns": [
+            {
+              "udt": "uuid",
+              "enum": null,
+              "name": "id",
+              "type": "uuid",
+              "comment": null,
+              "default": "gen_random_uuid()",
+              "category": "user",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "uuid",
+              "enum": null,
+              "name": "product_id",
+              "type": "uuid",
+              "comment": null,
+              "default": null,
+              "category": "user",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "storage_path",
+              "type": "text",
+              "comment": "Object path in the bucket \"images\" (folder nordwind/). @cms(image, bucket=images)",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "alt_text",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "title_attr",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "int4",
+              "enum": null,
+              "name": "position",
+              "type": "integer",
+              "comment": null,
+              "default": "0",
+              "category": "number",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "timestamptz",
+              "enum": null,
+              "name": "updated_at",
+              "type": "timestamp with time zone",
+              "comment": null,
+              "default": "now()",
+              "category": "datetime",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            }
+          ],
+          "comment": null,
+          "privileges": {
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true
+          },
+          "primary_key": [
+            "id"
+          ],
+          "foreign_keys": [
+            {
+              "name": "product_images_product_id_fkey",
+              "columns": [
+                "product_id"
+              ],
+              "on_delete": "cascade",
+              "on_update": "no action",
+              "references": {
+                "table": "products",
+                "schema": "nordwind",
+                "columns": [
+                  "id"
+                ],
+                "readable": true
+              }
+            }
+          ]
+        },
+        {
+          "rls": {
+            "forced": false,
+            "enabled": true,
+            "policies": [
+              {
+                "name": "rbac: cms_admin all",
+                "check": "true",
+                "using": "true",
+                "command": "all",
+                "permissive": true
+              }
+            ]
+          },
+          "kind": "table",
+          "name": "products",
+          "unique": [
+            [
+              "sku"
+            ]
+          ],
+          "columns": [
+            {
+              "udt": "uuid",
+              "enum": null,
+              "name": "id",
+              "type": "uuid",
+              "comment": null,
+              "default": "gen_random_uuid()",
+              "category": "user",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "sku",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "name",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "description",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "numeric",
+              "enum": null,
+              "name": "price",
+              "type": "numeric(10,2)",
+              "comment": null,
+              "default": null,
+              "category": "number",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "nordwind.currency_code",
+              "enum": [
+                "EUR",
+                "USD",
+                "GBP",
+                "CHF",
+                "PLN",
+                "CZK",
+                "SEK",
+                "DKK",
+                "NOK"
+              ],
+              "name": "currency",
+              "type": "nordwind.currency_code",
+              "comment": "Leave empty for the default currency of the brand (Settings).",
+              "default": "nordwind.default_currency()",
+              "category": "enum",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "bool",
+              "enum": null,
+              "name": "active",
+              "type": "boolean",
+              "comment": null,
+              "default": "true",
+              "category": "boolean",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "nordwind.product_status",
+              "enum": [
+                "draft",
+                "active",
+                "archived"
+              ],
+              "name": "status",
+              "type": "nordwind.product_status",
+              "comment": null,
+              "default": "'active'::nordwind.product_status",
+              "category": "enum",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "timestamptz",
+              "enum": null,
+              "name": "updated_at",
+              "type": "timestamp with time zone",
+              "comment": null,
+              "default": "now()",
+              "category": "datetime",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            }
+          ],
+          "comment": null,
+          "privileges": {
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true
+          },
+          "primary_key": [
+            "id"
+          ],
+          "foreign_keys": []
+        },
+        {
+          "rls": {
+            "forced": false,
+            "enabled": true,
+            "policies": [
+              {
+                "name": "rbac: cms_admin all",
+                "check": "true",
+                "using": "true",
+                "command": "all",
+                "permissive": true
+              }
+            ]
+          },
+          "kind": "table",
+          "name": "settings",
+          "unique": [],
+          "columns": [
+            {
+              "udt": "int2",
+              "enum": null,
+              "name": "id",
+              "type": "smallint",
+              "comment": null,
+              "default": "1",
+              "category": "number",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "display_name",
+              "type": "text",
+              "comment": "Name of the brand as customers see it.",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "website_url",
+              "type": "text",
+              "comment": "@cms(label=Website) Address of the shop, starting with https://",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "contact_email",
+              "type": "text",
+              "comment": "Address for customer questions.",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "nordwind.currency_code",
+              "enum": [
+                "EUR",
+                "USD",
+                "GBP",
+                "CHF",
+                "PLN",
+                "CZK",
+                "SEK",
+                "DKK",
+                "NOK"
+              ],
+              "name": "default_currency",
+              "type": "nordwind.currency_code",
+              "comment": "Currency of new products when none is chosen.",
+              "default": "'EUR'::nordwind.currency_code",
+              "category": "enum",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "nordwind.locale_code",
+              "enum": [
+                "de-DE",
+                "de-AT",
+                "de-CH",
+                "en-GB",
+                "en-US",
+                "fr-FR",
+                "fr-CH",
+                "it-IT",
+                "it-CH",
+                "nl-NL",
+                "es-ES",
+                "pl-PL",
+                "cs-CZ",
+                "sv-SE",
+                "da-DK",
+                "nb-NO"
+              ],
+              "name": "default_locale",
+              "type": "nordwind.locale_code",
+              "comment": "Language and region of the content.",
+              "default": "'de-DE'::nordwind.locale_code",
+              "category": "enum",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "seo_title_suffix",
+              "type": "text",
+              "comment": "@cms(label=SEO title suffix) Added to page titles, e.g. \" | Golden Coast Athletics\".",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "seo_description",
+              "type": "text",
+              "comment": "@cms(label=SEO description) Description for pages without their own.",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "logo_path",
+              "type": "text",
+              "comment": "Logo in the bucket \"images\" (folder nordwind/). @cms(image, bucket=images, alt=logo_alt, label=Logo)",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "logo_alt",
+              "type": "text",
+              "comment": "@cms(label=Logo alt text)",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "timestamptz",
+              "enum": null,
+              "name": "updated_at",
+              "type": "timestamp with time zone",
+              "comment": null,
+              "default": "now()",
+              "category": "datetime",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            }
+          ],
+          "comment": "@cms(singleton) Settings of the brand: one row.",
+          "privileges": {
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true
+          },
+          "primary_key": [
+            "id"
+          ],
+          "foreign_keys": []
+        }
+      ],
+      "comment": "Nordwind",
+      "functions": [
+        {
+          "name": "default_currency",
+          "comment": null,
+          "returns": "nordwind.currency_code",
+          "arguments": "",
+          "volatility": "stable",
+          "returns_set": false,
+          "security_definer": true
+        }
+      ]
+    },
+    {
+      "name": "public",
+      "tables": [
+        {
+          "rls": {
+            "forced": false,
+            "enabled": true,
+            "policies": [
+              {
+                "name": "rbac: cms_admin all",
+                "check": "true",
+                "using": "true",
+                "command": "all",
+                "permissive": true
+              }
+            ]
+          },
+          "kind": "table",
+          "name": "documents",
+          "unique": [],
+          "columns": [
+            {
+              "udt": "int8",
+              "enum": null,
+              "name": "id",
+              "type": "bigint",
+              "comment": null,
+              "default": null,
+              "category": "number",
+              "identity": "a",
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "brand",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "content",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "jsonb",
+              "enum": null,
+              "name": "metadata",
+              "type": "jsonb",
+              "comment": null,
+              "default": "'{}'::jsonb",
+              "category": "user",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "extensions.vector",
+              "enum": null,
+              "name": "embedding",
+              "type": "extensions.vector(1536)",
+              "comment": null,
+              "default": null,
+              "category": "user",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            }
+          ],
+          "comment": "Demo vector store. Seeded with deterministic pseudo-embeddings (no model needed).",
+          "privileges": {
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true
+          },
+          "primary_key": [
+            "id"
+          ],
+          "foreign_keys": []
+        }
+      ],
+      "comment": "standard public schema",
+      "functions": [
+        {
+          "name": "match_documents",
+          "comment": null,
+          "returns": "TABLE(id bigint, brand text, content text, metadata jsonb, similarity double precision)",
+          "arguments": "query_embedding extensions.vector, match_count integer DEFAULT 5, filter jsonb DEFAULT '{}'::jsonb",
+          "volatility": "stable",
+          "returns_set": true,
+          "security_definer": false
+        }
+      ]
+    },
+    {
+      "name": "suedwind",
+      "tables": [
+        {
+          "rls": {
+            "forced": false,
+            "enabled": true,
+            "policies": [
+              {
+                "name": "rbac: cms_admin all",
+                "check": "true",
+                "using": "true",
+                "command": "all",
+                "permissive": true
+              }
+            ]
+          },
+          "kind": "table",
+          "name": "faq",
+          "unique": [],
+          "columns": [
+            {
+              "udt": "uuid",
+              "enum": null,
+              "name": "id",
+              "type": "uuid",
+              "comment": null,
+              "default": "gen_random_uuid()",
+              "category": "user",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "question",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "answer",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "int4",
+              "enum": null,
+              "name": "position",
+              "type": "integer",
+              "comment": null,
+              "default": "0",
+              "category": "number",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "bool",
+              "enum": null,
+              "name": "published",
+              "type": "boolean",
+              "comment": null,
+              "default": "true",
+              "category": "boolean",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "timestamptz",
+              "enum": null,
+              "name": "updated_at",
+              "type": "timestamp with time zone",
+              "comment": null,
+              "default": "now()",
+              "category": "datetime",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            }
+          ],
+          "comment": null,
+          "privileges": {
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true
+          },
+          "primary_key": [
+            "id"
+          ],
+          "foreign_keys": []
+        },
+        {
+          "rls": {
+            "forced": false,
+            "enabled": true,
+            "policies": [
+              {
+                "name": "rbac: cms_admin all",
+                "check": "true",
+                "using": "true",
+                "command": "all",
+                "permissive": true
+              }
+            ]
+          },
+          "kind": "table",
+          "name": "product_images",
+          "unique": [],
+          "columns": [
+            {
+              "udt": "uuid",
+              "enum": null,
+              "name": "id",
+              "type": "uuid",
+              "comment": null,
+              "default": "gen_random_uuid()",
+              "category": "user",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "uuid",
+              "enum": null,
+              "name": "product_id",
+              "type": "uuid",
+              "comment": null,
+              "default": null,
+              "category": "user",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "storage_path",
+              "type": "text",
+              "comment": "Object path in the bucket \"images\" (folder suedwind/). @cms(image, bucket=images)",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "alt_text",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "title_attr",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "int4",
+              "enum": null,
+              "name": "position",
+              "type": "integer",
+              "comment": null,
+              "default": "0",
+              "category": "number",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "timestamptz",
+              "enum": null,
+              "name": "updated_at",
+              "type": "timestamp with time zone",
+              "comment": null,
+              "default": "now()",
+              "category": "datetime",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            }
+          ],
+          "comment": null,
+          "privileges": {
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true
+          },
+          "primary_key": [
+            "id"
+          ],
+          "foreign_keys": [
+            {
+              "name": "product_images_product_id_fkey",
+              "columns": [
+                "product_id"
+              ],
+              "on_delete": "cascade",
+              "on_update": "no action",
+              "references": {
+                "table": "products",
+                "schema": "suedwind",
+                "columns": [
+                  "id"
+                ],
+                "readable": true
+              }
+            }
+          ]
+        },
+        {
+          "rls": {
+            "forced": false,
+            "enabled": true,
+            "policies": [
+              {
+                "name": "rbac: cms_admin all",
+                "check": "true",
+                "using": "true",
+                "command": "all",
+                "permissive": true
+              }
+            ]
+          },
+          "kind": "table",
+          "name": "products",
+          "unique": [
+            [
+              "sku"
+            ]
+          ],
+          "columns": [
+            {
+              "udt": "uuid",
+              "enum": null,
+              "name": "id",
+              "type": "uuid",
+              "comment": null,
+              "default": "gen_random_uuid()",
+              "category": "user",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "sku",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "name",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "description",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "numeric",
+              "enum": null,
+              "name": "price",
+              "type": "numeric(10,2)",
+              "comment": null,
+              "default": null,
+              "category": "number",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "suedwind.currency_code",
+              "enum": [
+                "EUR",
+                "USD",
+                "GBP",
+                "CHF",
+                "PLN",
+                "CZK",
+                "SEK",
+                "DKK",
+                "NOK"
+              ],
+              "name": "currency",
+              "type": "suedwind.currency_code",
+              "comment": "Leave empty for the default currency of the brand (Settings).",
+              "default": "suedwind.default_currency()",
+              "category": "enum",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "bool",
+              "enum": null,
+              "name": "active",
+              "type": "boolean",
+              "comment": null,
+              "default": "true",
+              "category": "boolean",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "suedwind.product_status",
+              "enum": [
+                "draft",
+                "active",
+                "archived"
+              ],
+              "name": "status",
+              "type": "suedwind.product_status",
+              "comment": null,
+              "default": "'active'::suedwind.product_status",
+              "category": "enum",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "timestamptz",
+              "enum": null,
+              "name": "updated_at",
+              "type": "timestamp with time zone",
+              "comment": null,
+              "default": "now()",
+              "category": "datetime",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            }
+          ],
+          "comment": null,
+          "privileges": {
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true
+          },
+          "primary_key": [
+            "id"
+          ],
+          "foreign_keys": []
+        },
+        {
+          "rls": {
+            "forced": false,
+            "enabled": true,
+            "policies": [
+              {
+                "name": "rbac: cms_admin all",
+                "check": "true",
+                "using": "true",
+                "command": "all",
+                "permissive": true
+              }
+            ]
+          },
+          "kind": "table",
+          "name": "settings",
+          "unique": [],
+          "columns": [
+            {
+              "udt": "int2",
+              "enum": null,
+              "name": "id",
+              "type": "smallint",
+              "comment": null,
+              "default": "1",
+              "category": "number",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "display_name",
+              "type": "text",
+              "comment": "Name of the brand as customers see it.",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "website_url",
+              "type": "text",
+              "comment": "@cms(label=Website) Address of the shop, starting with https://",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "contact_email",
+              "type": "text",
+              "comment": "Address for customer questions.",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "suedwind.currency_code",
+              "enum": [
+                "EUR",
+                "USD",
+                "GBP",
+                "CHF",
+                "PLN",
+                "CZK",
+                "SEK",
+                "DKK",
+                "NOK"
+              ],
+              "name": "default_currency",
+              "type": "suedwind.currency_code",
+              "comment": "Currency of new products when none is chosen.",
+              "default": "'EUR'::suedwind.currency_code",
+              "category": "enum",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "suedwind.locale_code",
+              "enum": [
+                "de-DE",
+                "de-AT",
+                "de-CH",
+                "en-GB",
+                "en-US",
+                "fr-FR",
+                "fr-CH",
+                "it-IT",
+                "it-CH",
+                "nl-NL",
+                "es-ES",
+                "pl-PL",
+                "cs-CZ",
+                "sv-SE",
+                "da-DK",
+                "nb-NO"
+              ],
+              "name": "default_locale",
+              "type": "suedwind.locale_code",
+              "comment": "Language and region of the content.",
+              "default": "'de-DE'::suedwind.locale_code",
+              "category": "enum",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "seo_title_suffix",
+              "type": "text",
+              "comment": "@cms(label=SEO title suffix) Added to page titles, e.g. \" | Golden Coast Athletics\".",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "seo_description",
+              "type": "text",
+              "comment": "@cms(label=SEO description) Description for pages without their own.",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "logo_path",
+              "type": "text",
+              "comment": "Logo in the bucket \"images\" (folder suedwind/). @cms(image, bucket=images, alt=logo_alt, label=Logo)",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "logo_alt",
+              "type": "text",
+              "comment": "@cms(label=Logo alt text)",
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": true,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            },
+            {
+              "udt": "timestamptz",
+              "enum": null,
+              "name": "updated_at",
+              "type": "timestamp with time zone",
+              "comment": null,
+              "default": "now()",
+              "category": "datetime",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": true,
+                "select": true,
+                "update": true
+              }
+            }
+          ],
+          "comment": "@cms(singleton) Settings of the brand: one row.",
+          "privileges": {
+            "delete": true,
+            "insert": true,
+            "select": true,
+            "update": true
+          },
+          "primary_key": [
+            "id"
+          ],
+          "foreign_keys": []
+        }
+      ],
+      "comment": "Südwind",
+      "functions": [
+        {
+          "name": "default_currency",
+          "comment": null,
+          "returns": "suedwind.currency_code",
+          "arguments": "",
+          "volatility": "stable",
+          "returns_set": false,
+          "security_definer": true
+        }
+      ]
+    }
+  ],
+  "storage": {
+    "buckets": [
+      {
+        "id": "images",
+        "name": "images",
+        "public": true,
+        "object_policies": [
+          {
+            "name": "rbac: cms_admin all",
+            "check": "(bucket_id = 'images'::text)",
+            "using": "(bucket_id = 'images'::text)",
+            "command": "all"
+          }
+        ]
+      }
+    ],
+    "object_privileges": {
+      "delete": true,
+      "insert": true,
+      "select": true,
+      "update": true
+    }
+  },
+  "is_admin": true,
+  "plugin_version": 6
+}

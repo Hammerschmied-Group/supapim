@@ -1,0 +1,158 @@
+{
+  "role": "hr_editor",
+  "schemas": [
+    {
+      "name": "public",
+      "tables": [
+        {
+          "rls": {
+            "forced": false,
+            "enabled": true,
+            "policies": [
+              {
+                "name": "rbac: hr_editor select",
+                "check": null,
+                "using": "(brand = 'hr'::text)",
+                "command": "select",
+                "permissive": true
+              }
+            ]
+          },
+          "kind": "table",
+          "name": "documents",
+          "unique": [],
+          "columns": [
+            {
+              "udt": "int8",
+              "enum": null,
+              "name": "id",
+              "type": "bigint",
+              "comment": null,
+              "default": null,
+              "category": "number",
+              "identity": "a",
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": false,
+                "select": true,
+                "update": false
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "brand",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": false,
+                "select": true,
+                "update": false
+              }
+            },
+            {
+              "udt": "text",
+              "enum": null,
+              "name": "content",
+              "type": "text",
+              "comment": null,
+              "default": null,
+              "category": "string",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": false,
+                "select": true,
+                "update": false
+              }
+            },
+            {
+              "udt": "jsonb",
+              "enum": null,
+              "name": "metadata",
+              "type": "jsonb",
+              "comment": null,
+              "default": "'{}'::jsonb",
+              "category": "user",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": false,
+                "select": true,
+                "update": false
+              }
+            },
+            {
+              "udt": "extensions.vector",
+              "enum": null,
+              "name": "embedding",
+              "type": "extensions.vector(1536)",
+              "comment": null,
+              "default": null,
+              "category": "user",
+              "identity": null,
+              "is_array": false,
+              "nullable": false,
+              "generated": null,
+              "privileges": {
+                "insert": false,
+                "select": true,
+                "update": false
+              }
+            }
+          ],
+          "comment": "Demo vector store. Seeded with deterministic pseudo-embeddings (no model needed).",
+          "privileges": {
+            "delete": false,
+            "insert": false,
+            "select": true,
+            "update": false
+          },
+          "primary_key": [
+            "id"
+          ],
+          "foreign_keys": []
+        }
+      ],
+      "comment": "standard public schema",
+      "functions": []
+    }
+  ],
+  "storage": {
+    "buckets": [
+      {
+        "id": "hr-files",
+        "name": "hr-files",
+        "public": false,
+        "object_policies": [
+          {
+            "name": "rbac: hr_editor all",
+            "check": "(bucket_id = 'hr-files'::text)",
+            "using": "(bucket_id = 'hr-files'::text)",
+            "command": "all"
+          }
+        ]
+      }
+    ],
+    "object_privileges": {
+      "delete": true,
+      "insert": true,
+      "select": true,
+      "update": true
+    }
+  },
+  "is_admin": false,
+  "plugin_version": 6
+}

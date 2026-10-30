@@ -1,0 +1,14 @@
+# Gateway wiring for Envoy, upstream's default gateway (service api-gw). Add it after docker-compose.cms.yml.
+# The wrapper entrypoint inserts the plugin routes into the config upstream's own entrypoint then reads:
+# the open OAuth route /auth/v1/oauth/ and /cms, /cms/mcp, /cms/api/admin/*, /oauth/consent, resource metadata.
+# The volumes are upstream's own list (self-hosted/v0.8.x) with the config files moved to *.upstream.yaml.
+# See docs/compatibility.md for versions; Kong users take docker-compose.kong.yml instead.
+services:
+  api-gw:
+    volumes: !override
+      - ./volumes/api/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro
+      - ./volumes/api/envoy/cds.yaml:/etc/envoy/cds.upstream.yaml:ro
+      - ./volumes/api/envoy/lds.template.yaml:/etc/envoy/lds.upstream.yaml:ro
+      - ./volumes/api/envoy/docker-entrypoint.sh:/docker-entrypoint.sh:ro
+      - ${CMS_PKG_DIR:-./cms}/gateway/envoy:/cms-gateway:ro
+    entrypoint: ["/bin/sh", "/cms-gateway/entrypoint.sh"]

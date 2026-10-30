@@ -1,0 +1,13 @@
+# Gateway wiring for Kong. Needs upstream's Kong override in COMPOSE_FILE first (sh run.sh config add kong), then:
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.kong.yml:cms/docker-compose.cms.yml:cms/docker-compose.kong.yml
+# The wrapper entrypoint adds the plugin routes to the declarative config upstream's entrypoint then reads:
+# the open OAuth route /auth/v1/oauth/ and /cms, /oauth/consent, resource metadata (see gateway/kong/entrypoint.sh).
+# The environment is not repeated here: this file only replaces what the wrapper needs, upstream's docker-compose.kong.yml
+# stays in charge of image, ports and Kong settings. Volumes: upstream's two files, moved under /cms-upstream.
+services:
+  api-gw:
+    volumes: !override
+      - ./volumes/api/kong.yml:/cms-upstream/kong.yml:ro,z
+      - ./volumes/api/kong-entrypoint.sh:/cms-upstream/kong-entrypoint.sh:ro,z
+      - ${CMS_PKG_DIR:-./cms}/gateway/kong:/cms-gateway:ro,z
+    entrypoint: !override ["/bin/sh", "/cms-gateway/entrypoint.sh"]

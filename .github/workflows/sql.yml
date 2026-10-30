@@ -1,0 +1,27 @@
+# Plugin migration tests (scripts/test-sql.sh) in throwaway supabase/postgres containers.
+# Prepared for when the repo gets a remote; needs nothing but Docker (no secrets, no stack).
+name: sql
+
+on:
+  push:
+    paths: ['packages/sql/**', 'demo/sql/**', 'scripts/test-sql.sh', '.github/workflows/sql.yml']
+  pull_request:
+    paths: ['packages/sql/**', 'demo/sql/**', 'scripts/test-sql.sh', '.github/workflows/sql.yml']
+  workflow_dispatch:
+
+jobs:
+  test-sql:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres:
+          - 17.6.1.136   # self-hosted upstream default (stack/SUPABASE_VERSION)
+          - 15.14.1.122  # like AVIA
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pull supabase/postgres:${{ matrix.postgres }}
+        run: docker pull supabase/postgres:${{ matrix.postgres }}
+      - name: Install → idempotency → uninstall → tests → residue
+        run: scripts/test-sql.sh ${{ matrix.postgres }}

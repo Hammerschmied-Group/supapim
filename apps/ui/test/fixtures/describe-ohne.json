@@ -1,0 +1,15 @@
+{
+  "role": "authenticated",
+  "schemas": [],
+  "storage": {
+    "buckets": [],
+    "object_privileges": {
+      "delete": true,
+      "insert": true,
+      "select": true,
+      "update": true
+    }
+  },
+  "is_admin": false,
+  "plugin_version": 6
+}

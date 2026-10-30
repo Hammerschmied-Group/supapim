@@ -1,0 +1,7 @@
+{
+  "name": "supapim",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Root manifest: the one place where the release version lives. scripts/build-image.sh and scripts/build-package.sh read it; apps/* keep their own versions.",
+  "license": "BUSL-1.1"
+}

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "supapim-local": {
+      "type": "http",
+      "url": "http://localhost:55321/cms/mcp"
+    }
+  }
+}

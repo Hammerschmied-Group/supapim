@@ -1,0 +1,76 @@
+# SupaPIM for a Supabase Cloud project: only the plugin container runs here (any Docker host with a public
+# https address); the project itself stays on supabase.com. Guide: docs/install-cloud.md
+#
+#   cp env.example .env   # fill in the values
+#   docker compose up -d                       # container only, you bring the TLS reverse proxy
+#   docker compose --profile caddy up -d       # … or with Caddy as reverse proxy (automatic Let's Encrypt certificate)
+#   add  --profile admin  to also run the admin API (needs SUPABASE_SECRET_KEY): docker compose --profile caddy --profile admin up -d
+#
+# The container talks to https://<ref>.supabase.co like any client: the public key + the signed-in person's own token.
+# It never gets the database password or the JWT secret. Only the separate admin container (profile `admin`) holds the
+# secret key, to invite and block people, after a valid token AND a database check that the person is an admin.
+services:
+  cms:
+    image: "${CMS_IMAGE:?CMS_IMAGE is empty - see env.example}"
+    restart: unless-stopped
+    ports:
+      - "${CMS_BIND:-127.0.0.1}:${CMS_PORT:-8080}:8080"
+    environment:
+      PORT: 8080
+      # The project: https://<ref>.supabase.co (Settings → API)
+      SUPABASE_URL: "${SUPABASE_URL:?SUPABASE_URL is empty - see env.example}"
+      SUPABASE_PUBLIC_URL: "${SUPABASE_URL}"
+      AUTH_ISSUER: "${SUPABASE_URL}/auth/v1"
+      # Public (publishable) key: it is in every web page of a Supabase app
+      SUPABASE_ANON_KEY: "${SUPABASE_PUBLISHABLE_KEY:?SUPABASE_PUBLISHABLE_KEY is empty - see env.example}"
+      # The public address of THIS container (https://cms.example.com): host of /cms, /cms/mcp and the consent page
+      PUBLIC_BASE_URL: "${CMS_PUBLIC_URL:?CMS_PUBLIC_URL is empty - see env.example}"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+
+  # The admin API (/cms/api/admin/*) in its own container, same image: the only one with the secret key. Start it only if
+  # you want invitations from the CMS; otherwise leave SUPABASE_SECRET_KEY empty (the service is not started) and invite in the dashboard.
+  cms-admin:
+    profiles: ["admin"]
+    image: "${CMS_IMAGE:?CMS_IMAGE is empty - see env.example}"
+    command: ["node", "admin.mjs"]
+    restart: unless-stopped
+    ports:
+      - "${CMS_BIND:-127.0.0.1}:${CMS_ADMIN_PORT:-8081}:8081"
+    environment:
+      PORT: 8081
+      SUPABASE_URL: "${SUPABASE_URL:?SUPABASE_URL is empty - see env.example}"
+      SUPABASE_PUBLIC_URL: "${SUPABASE_URL}"
+      AUTH_ISSUER: "${SUPABASE_URL}/auth/v1"
+      SUPABASE_ANON_KEY: "${SUPABASE_PUBLISHABLE_KEY:?SUPABASE_PUBLISHABLE_KEY is empty - see env.example}"
+      SUPABASE_SECRET_KEY: "${SUPABASE_SECRET_KEY:?SUPABASE_SECRET_KEY is empty - needed for the admin profile}"
+      CMS_ADMIN_INVITE_DELIVERY: "${CMS_ADMIN_INVITE_DELIVERY:-mail}"
+      CMS_PUBLIC_UI_URL: "${CMS_PUBLIC_URL:?CMS_PUBLIC_URL is empty - see env.example}/cms/"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8081/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+
+  # Optional: Caddy as TLS reverse proxy (profile `caddy`). Point the DNS record of CMS_DOMAIN at this host first.
+  caddy:
+    profiles: ["caddy"]
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      CMS_DOMAIN: "${CMS_DOMAIN:?CMS_DOMAIN is empty - see env.example}"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on:
+      cms:
+        condition: service_healthy
+
+volumes:
+  caddy-data:

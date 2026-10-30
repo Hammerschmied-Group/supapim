@@ -1,0 +1,19 @@
+# Used by the `caddy` profile of docker-compose.yml. {$CMS_DOMAIN} comes from .env (for example cms.example.com).
+{$CMS_DOMAIN} {
+	header Strict-Transport-Security "max-age=31536000"
+
+	# admin API: its own container (profile `admin`); without it this path answers 502
+	handle /cms/api/admin/* {
+		reverse_proxy cms-admin:8081
+	}
+
+	handle {
+		reverse_proxy cms:8080 {
+			# MCP uses long-lived streaming responses
+			flush_interval -1
+			transport http {
+				response_header_timeout 120s
+			}
+		}
+	}
+}

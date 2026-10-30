@@ -1,0 +1,21 @@
+{
+  "name": "supapim-server",
+  "version": "0.1.0",
+  "license": "BUSL-1.1",
+  "private": true,
+  "description": "Spike: remote MCP server (Streamable HTTP) that acts with the signed-in Supabase user's token, plus the OAuth consent page.",
+  "type": "module",
+  "main": "server.mjs",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "express": "5.3.0",
+    "jose": "6.2.13",
+    "zod": "4.6.7"
+  }
+}

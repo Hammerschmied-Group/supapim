@@ -1,0 +1,7 @@
+# Allow-list: the image needs apps/ only. Keeps .env, stack/ and demo data out of the build context.
+*
+!apps/
+apps/**/node_modules
+apps/ui/dist
+apps/ui/test-results
+apps/ui/playwright-report

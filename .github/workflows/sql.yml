@@ -1,12 +1,12 @@
 # Plugin migration tests (scripts/test-sql.sh) in throwaway supabase/postgres containers.
-# Prepared for when the repo gets a remote; needs nothing but Docker (no secrets, no stack).
+# Needs nothing but Docker (no secrets, no stack).
 name: sql
 
 on:
   push:
-    paths: ['packages/sql/**', 'demo/sql/**', 'scripts/test-sql.sh', '.github/workflows/sql.yml']
+    paths: ['packages/sql/**', 'demo/sql/**', 'scripts/sql/**', 'scripts/test-sql.sh', '.github/workflows/sql.yml']
   pull_request:
-    paths: ['packages/sql/**', 'demo/sql/**', 'scripts/test-sql.sh', '.github/workflows/sql.yml']
+    paths: ['packages/sql/**', 'demo/sql/**', 'scripts/sql/**', 'scripts/test-sql.sh', '.github/workflows/sql.yml']
   workflow_dispatch:
 
 jobs:
